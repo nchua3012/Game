@@ -5,16 +5,26 @@
     <style>
         canvas {
             border: 1px solid #d3d3d3;
-            background-color: #f1f1f1;
+            background-color: #ceddb1;
         }
     </style>
 </head>
 <body onload="startGame()">
 <script>
+var myGamePiece;
+var obstacles = [];
+var isMoving = true; // Variable to track movement state
+
 function startGame() {
     myGameArea.start();
     myGamePiece = new Component(100, 100, 'Assets/Capybara_walk_right10x.gif', 10, 10);
-    myGameArea.interval = setInterval(updateGameArea, 20);
+    
+    // Create some obstacles
+    obstacles.push(new Component(250, 500, 'Assets/5 - 2.png', 100, 220));
+    obstacles.push(new Component(250, 450, 'Assets/5 - 2.png', 500, 0));
+    obstacles.push(new Component(250, 600, 'Assets/5 - 2.png', 950, 120));
+    
+    myGameArea.interval = setInterval(updateGameArea, 60);
 }
 
 var myGameArea = {
@@ -30,49 +40,73 @@ var myGameArea = {
     }
 }
 
-function Component(width, height, asset, x, y) {
+function Component(width, height, asset, x, y, color) {
     this.width = width;
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
     this.x = x;
     this.y = y;
-    
+
     this.image = new Image();
-    this.image.src = asset;
+    if (asset) {
+        this.image.src = asset;
+    }
 
     this.update = function() {
         const ctx = myGameArea.context;
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height); // Draw the GIF
+        if (this.image.src) {
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height); // Draw the GIF
+        } else {
+            ctx.fillStyle = color; // Color for obstacles
+            ctx.fillRect(this.x, this.y, this.width, this.height); // Draw obstacle
+        }
     }
 
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;        
-    }    
+    }
+    
+    this.collidesWith = function(other) {
+        return this.x < other.x + other.width &&
+               this.x + this.width > other.x &&
+               this.y < other.y + other.height &&
+               this.y + this.height > other.y;
+    }
 }
 
 function updateGameArea() {
     myGameArea.clear();
-    myGamePiece.newPos();    
+    if (isMoving) {
+        myGamePiece.newPos();    
+    }
+
+    // Collision detection
+    for (let obstacle of obstacles) {
+        if (myGamePiece.collidesWith(obstacle)) {
+            // Handle collision
+            myGamePiece.speedX = 0; // Stop horizontal movement
+            myGamePiece.speedY = 0; // Stop vertical movement
+        }
+        obstacle.update(); // Draw the obstacle
+    }
+
     myGamePiece.update();
 }
 
 // Movement functions
 function moveup() {
-    myGamePiece.speedY = -1; 
+    myGamePiece.speedY = -5; 
 }
-
 function movedown() {
-    myGamePiece.speedY = 1; 
+    myGamePiece.speedY = 5; 
 }
-
 function moveleft() {
-    myGamePiece.speedX = -1; 
+    myGamePiece.speedX = -5; 
 }
-
 function moveright() {
-    myGamePiece.speedX = 1; 
+    myGamePiece.speedX = 5; 
 }
 
 // Stop movement when key is released
@@ -81,7 +115,7 @@ function stopMove() {
     myGamePiece.speedY = 0;
 }
 
-// Adding event listeners for key controls
+// Key control functions
 document.addEventListener("keydown", function(event) {
     switch(event.key) {
         case 'w':
@@ -99,11 +133,42 @@ document.addEventListener("keydown", function(event) {
     }
 });
 
+// Stop movement on key up
 document.addEventListener("keyup", stopMove);
+
+// Update position based on mouse coordinates
+function updateMousePosition(event) {
+    const rect = myGameArea.canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left; // Mouse X relative to the canvas
+    const mouseY = event.clientY - rect.top;  // Mouse Y relative to the canvas
+    
+    const deltaX = mouseX - myGamePiece.x - (myGamePiece.width / 5);
+    const deltaY = mouseY - myGamePiece.y - (myGamePiece.height / 5);
+    
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+    // Normalize speed
+    if (distance > 0) {
+        myGamePiece.speedX = (deltaX / distance) * 5; // Speed factor
+        myGamePiece.speedY = (deltaY / distance) * 5; // Speed factor
+    }
+}
+
+// Add mouse movement event listener
+document.addEventListener("mousemove", updateMousePosition);
+
+// Mouse click to stop and start movement
+document.addEventListener("click", function() {
+    isMoving = !isMoving; // Toggle movement state
+});
 
 </script>
 
-<p>capybara</p>
-
+<p>CAPYBARA</p>
+<p>W - Up</p>
+<p>A - Left</p>
+<p>S - Down</p>
+<p>D - Right</p>
+<p>Click to Start/Stop Movement</p>
 </body>
 </html>
