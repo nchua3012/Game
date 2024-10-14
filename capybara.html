@@ -13,37 +13,63 @@ canvas {
 <script>
 
 function startGame() {
-    myGameArea.start();
+  myGameArea.start();
+  myGamePiece = new Component(100, 100, 'Assets/Capybara_walk_right10x.gif', 10, 10); // Added position
+  myGameArea.interval = setInterval(updateGameArea, 60); // Add a game loop
 }
 
 var myGameArea = {
-    canvas : document.createElement("canvas"),
-    start : function() {
+    canvas: document.createElement("canvas"),
+    start: function() {
         this.canvas.width = 1280;
         this.canvas.height = 720;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    },
+    clear: function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
-var myGamePiece;
 
-function startGame() {
-  myGameArea.start();
-  myGamePiece = new component();
-}
-
-function component(width, height, color, x, y) {
+function Component(width, height, asset, x, y) {
   this.width = width;
   this.height = height;
+  this.speedX = 0;
+  this.speedY = 0;
   this.x = x;
   this.y = y;
-  ctx = myGameArea.context;
-  ctx.fillStyle = color;
-  ctx.fillRect(this.x, this.y, this.width, this.height);
+  this.update = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;        
+    }    
 }
 
+function updateGameArea() {
+    myGameArea.clear();
+    myGamePiece.newPos();    
+    myGamePiece.update();
+}
 
+function moveup() {
+    myGamePiece.speedY -= 1; 
+}
 
+function movedown() {
+    myGamePiece.speedY += 1; 
+}
+
+function moveleft() {
+    myGamePiece.speedX -= 1; 
+}
+
+function moveright() {
+    myGamePiece.speedX += 1; 
+}
 </script>
 
 <p>capybara</p>
