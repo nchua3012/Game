@@ -6,5 +6,5 @@ canvas.height = 720
 c.fillStyle = 'beige'
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const image = new Image (/Assets)
-image.src = 'reference image'
+const image = new Image ()
+image.src = 'Assets/Map/Map1.tmx'

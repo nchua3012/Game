@@ -3,8 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "Assets/Map/Map1.tmx",
     "expandedProjectPaths": [
+        ".",
+        "Assets/Map",
+        "Assets"
     ],
     "fileStates": {
         "#Interiors_free_32x32": {
@@ -13,6 +16,14 @@
         "Assets/Map/Interiors_free_32x32.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "Assets/Map/Map1.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 471.5,
+                "y": 779
+            }
         },
         "Assets/Map/Room_Builder_free_32x32.tsx": {
             "scaleInDock": 1,
@@ -24,11 +35,15 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 70,
     "openFiles": [
+        "Assets/Map/Map1.tmx",
+        "Assets/Map/Interiors_free_32x32.tsx",
+        "Assets/Map/Room_Builder_free_32x32.tsx"
     ],
     "project": "Map.tiled-project",
     "recentFiles": [
+        "Assets/Map/Room_Builder_free_32x32.tsx",
         "Assets/Map/Interiors_free_32x32.tsx",
-        "Assets/Map/Room_Builder_free_32x32.tsx"
+        "Assets/Map/Map1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }
